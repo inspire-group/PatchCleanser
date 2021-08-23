@@ -1,0 +1,6 @@
+tqdm #==4.51.0
+torch #==1.7.0
+torchvision #==0.8.1
+joblib #==0.17.0
+numpy #==1.19.2
+timm == 0.4.12 # timm is actively evolving, so I specify the version number
