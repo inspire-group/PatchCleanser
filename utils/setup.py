@@ -39,7 +39,7 @@ def get_model(model_name,dataset_name,model_dir):
         pretrained_dict = checkpoint['model_state_dict']
         # I trained and saved the model with DataParallel, here I remove 'module.' in the weight dict key
         # an alternative is to comment out the line beblow and create a DataParallel instance yourself, e.g., model = torch.nn.DataParallel(model)
-        # note: the DataParallel instance might be imcompatiable with timm.data.resolve_data_config and result in some unexpected and stealthy bugs
+        # note: using DataParallel might result in subtle issues with timm (e.g., timm.data.resolve_data_config), since the instance becomes the DataParallel wrapper instead of timm.models
         pretrained_dict = {key.replace("module.", ""): value for key, value in pretrained_dict.items()} 
         model.load_state_dict(pretrained_dict) 
     elif dataset_name == 'imagenet' and 'masked' in model_name: #override the pretrained ImageNet weights when masked model training is used
