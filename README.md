@@ -68,7 +68,7 @@ If you find our work useful in your research, please consider citing:
 
 ```tex
 @article{xiang2021patchcleanser,
-  title={PatchCleanser:  Certifiably Robust Defense against Adversarial Patches for Any Image Classifier},
+  title={PatchCleanser: Certifiably Robust Defense against Adversarial Patches for Any Image Classifier},
   author={Xiang, Chong and Mahloujifar, Saeed and Mittal, Prateek},
   journal={arXiv preprint arXiv:2108.09135},
   year={2021}
