@@ -24,10 +24,9 @@ Model training should be very easy with the provided training scripts.
 
 **Note 1:** We do not have weights for ImageNet; the pretrained weights can be loaded using `timm`.
 
-**Note 2:** Models that use *masked model training* has a slightly different name:
+**Note 2:** Models that use *cutout training* has a slightly different name:
 
-`{model_name}_masked_{dataset_name}.pth`
+`{model_name}_cutout2_128_{dataset_name}.pth`
 
 **Note 3:** `'_{dataset_name}.pth'` will be automatically appended to `args.model` in the scripts `pc_certification.py`, `pc_clean_acc.py`, and `vanilla_clean_acc.py`.
-
 

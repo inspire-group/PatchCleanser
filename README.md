@@ -1,7 +1,11 @@
 # PatchCleanser:  Certifiably Robust Defense against Adversarial Patches for Any Image Classifier
 By [Chong Xiang](http://xiangchong.xyz/), [Saeed Mahloujifar](https://smahloujifar.github.io/), [Prattek Mittal](https://www.princeton.edu/~pmittal/)
 
-Code for "[PatchCleanser:  Certifiably Robust Defense against Adversarial Patches for Any Image Classifier](https://arxiv.org/abs/2108.09135)" in USENIX Security Symposium 2022. The camera-ready version will be uploaded soon!
+Code for "[PatchCleanser:  Certifiably Robust Defense against Adversarial Patches for Any Image Classifier](https://arxiv.org/abs/2108.09135)" in USENIX Security Symposium 2022. 
+
+Update 02/06: make some minor changes to the model loading and update the [pretrained weights](https://drive.google.com/drive/folders/1Ewks-NgJHDlpeAaGInz_jZ6iczcYNDlN?usp=sharing) 
+
+Update 01/2022: Our paper is accepted by USENIX Security Symposium 2022. We will release the camera-ready version soon!
 
 <img src="./assets/arch.png" align="center" width="100%" alt="defense overview pipeline" >
 
