@@ -69,11 +69,15 @@ else:
 
         #two-mask predictions
         prediction_map = np.zeros([num_img,num_mask,num_mask],dtype=int)
+        confidence_map = np.zeros([num_img,num_mask,num_mask])        
         for i,mask in enumerate(mask_list):
             for j in range(i,num_mask):
                 mask2 = mask_list[j]
                 masked_output = model(torch.where(torch.logical_and(mask,mask2),data,torch.tensor(0.).cuda()))
-                _, masked_pred = masked_output.max(1)
+                masked_output = torch.nn.functional.softmax(masked_output,dim=1)
+                masked_conf, masked_pred = masked_output.max(1)
+                masked_conf = masked_conf.detach().cpu().numpy()
+                confidence_map[:,i,j] = masked_conf
                 masked_pred = masked_pred.detach().cpu().numpy()
                 prediction_map[:,i,j] = masked_pred
                 
@@ -83,12 +87,15 @@ else:
         clean_pred = clean_pred.detach().cpu().numpy()
         orig_prediction_list.append(clean_pred)
         prediction_map_list.append(prediction_map)
+        confidence_map_list.append(confidence_map)
         label_list.append(labels)
     
     prediction_map_list = np.concatenate(prediction_map_list)
+    confidence_map_list = np.concatenate(confidence_map_list)
     orig_prediction_list = np.concatenate(orig_prediction_list)
     label_list = np.concatenate(label_list)
 
+    joblib.dump(confidence_map_list,os.path.join(DUMP_DIR,'confidence_map_list'+SUFFIX))
     joblib.dump(prediction_map_list,os.path.join(DUMP_DIR,'prediction_map_list'+SUFFIX))
     joblib.dump(orig_prediction_list,os.path.join(DUMP_DIR,'orig_prediction_list_{}_{}_{}.z'.format(DATASET,MODEL_NAME,NUM_IMG)))
     joblib.dump(label_list,os.path.join(DUMP_DIR,'label_list_{}_{}_{}.z'.format(DATASET,MODEL_NAME,NUM_IMG)))

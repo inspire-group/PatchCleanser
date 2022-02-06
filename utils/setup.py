@@ -23,30 +23,20 @@ def get_model(model_name,dataset_name,model_dir):
     model           torch.nn.Module, the PyToch model with weights loaded
     '''
 
+    timm_pretrained = (dataset_name == 'imagenet') and ('cutout' not in model_name)
     if 'resnetv2_50x1_bit_distilled' in model_name:
-        model = timm.create_model('resnetv2_50x1_bit_distilled', pretrained=True)
+        model = timm.create_model('resnetv2_50x1_bit_distilled', pretrained=timm_pretrained)
     elif 'vit_base_patch16_224' in model_name:
-        model = timm.create_model('vit_base_patch16_224', pretrained=True)
+        model = timm.create_model('vit_base_patch16_224', pretrained=timm_pretrained)
     elif 'resmlp_24_distilled_224' in model_name:
-        model = timm.create_model('resmlp_24_distilled_224', pretrained=True)
+        model = timm.create_model('resmlp_24_distilled_224', pretrained=timm_pretrained)
 
     # modify classification head and load model weight
-    if dataset_name in ['cifar','imagenette','svhn','flower102','cifar100']: 
+    if not timm_pretrained: 
         model.reset_classifier(num_classes=NUM_CLASSES_DICT[dataset_name])
-        #model = torch.nn.DataParallel(model)
         checkpoint_name = model_name + '_{}.pth'.format(dataset_name) 
         checkpoint = torch.load(os.path.join(model_dir,checkpoint_name))
-        pretrained_dict = checkpoint['model_state_dict']
-        # I trained and saved the model with DataParallel, here I remove 'module.' in the weight dict key
-        # note: using DataParallel might result in subtle issues with timm.
-        # For example, timm.data.resolve_data_config can recognize timm.models but not the DataParallel wrapper
-        # This might result in a mismatch in data preprocessing pipeline
-        pretrained_dict = {key.replace("module.", ""): value for key, value in pretrained_dict.items()} 
-        model.load_state_dict(pretrained_dict) 
-    elif dataset_name == 'imagenet' and 'cutout' in model_name: #override the pretrained ImageNet weights when masked model training is used
-        checkpoint_name = model_name + '_imagenet.pth' 
-        checkpoint = torch.load(os.path.join(model_dir,checkpoint_name))
-        model.load_state_dict(checkpoint['state_dict'])  
+        model.load_state_dict(checkpoint['state_dict']) 
 
     return model
 
@@ -70,7 +60,14 @@ def get_data_loader(dataset_name,data_dir,model,batch_size=1,num_img=-1,train=Fa
     len(dataset)    the size of dataset
     config          data preprocessing configuration dict
     '''
-    
+
+    ### !!!!!ATTN!!!!!! Do not pass a DataParallel instance as `model`. 
+    ### The DataParallel wrap makes the `default_cfg` invisible to `resolve_data_config` and might returns a incompatiable data preprocessing pipeline
+    ### you can add the DataParallel wrapper after calling `get_data_loader`
+    if isinstance(model,(torch.nn.DataParallel)):
+        model = model.module
+
+
     # get dataset
     if dataset_name in ['imagenette','imagenet','flower102']:
         #high resolution images; use the default image preprocessing (all three models use 224x224 inputs)
