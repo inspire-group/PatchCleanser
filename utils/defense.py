@@ -217,3 +217,43 @@ def challenger_masking(data,mask_list,model):
                     used_flg[challenger]=True
         output_pred[j] = candidate_label
     return output_pred
+
+
+def challenger_masking_precomputed(prediction_map):
+    # perform challenger masking inference with the pre-computed two-mask predictions
+    '''
+    INPUT:
+    prediction_map  numpy.ndarray [num_mask,num_mask], the two-mask prediction map for a single data point
+
+    OUTPUT:         int, the prediction label 
+    '''
+    # first-round masking
+    pred_one_mask = np.diag(prediction_map)
+    pred,cnt = np.unique(pred_one_mask,return_counts=True)
+
+    if len(pred) == 1: # unanimous agreement in the first-round masking
+        candidate_label = pred[0] 
+    else:
+        # second-round masking (challenger game)
+        candidate = 0 # take the index 0 as the winner candidate
+        candidate_label = pred_one_mask[candidate]
+        num_mask = len(pred_one_mask)
+        used_flg = np.zeros([num_mask],dtype=bool) 
+        while len(np.unique(pred_one_mask[~used_flg]))>1:
+            # find a challenger
+            for challenger in range(0,num_mask):
+                if used_flg[challenger]:
+                    continue
+                challenger_label = pred_one_mask[challenger]
+                if challenger_label==candidate_label:
+                    continue
+                break
+            # challenger game
+            masked_pred = prediction_map[candidate,challenger]
+            if masked_pred == challenger_label:
+                used_flg[candidate]=True
+                candidate = challenger
+                candidate_label = challenger_label
+            else:
+                used_flg[challenger]=True
+    return candidate_label

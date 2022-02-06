@@ -13,6 +13,8 @@ Code for "[PatchCleanser:  Certifiably Robust Defense against Adversarial Patche
 
 <img src="./assets/comparison.png" align="center" width="50%" alt="performance comparison" >
 
+#### Check out this [paper list for adversarial patch research](https://github.com/xiangchong1/adv-patch-paper-list) for more fun!
+
 ## Requirements
 The code is tested with PyTorch 1.7.0 and timm 0.4.12. The complete list of required packages are available in `requirement.txt`, and can be installed with `pip install -r requirement.txt`. The code should be compatible with other versions of packages.
 
