@@ -38,6 +38,10 @@ The code is tested with PyTorch 1.7.0 and timm 0.4.12. The complete list of requ
 |   ├── setup.py                     #utils for constructing models and data loaders
 |   ├── defense.py                   #utils for PatchCleanser defenses
 |   └── cutout.py                    #utils for masked model training
+|
+├── misc
+|   ├── pc_mr.py                     #script for minority report (Figure 9)
+|   └── pc_multiple.py               #script for multiple patch shapes and multiple patches (Table 4)
 | 
 ├── data   
 |   ├── imagenet                     #data directory for imagenet
@@ -63,6 +67,7 @@ The code is tested with PyTorch 1.7.0 and timm 0.4.12. The complete list of requ
 - Download data in **Datasets** to `data/`.
 - (optional) Download checkpoints from Google Drive [link](https://drive.google.com/drive/folders/1Ewks-NgJHDlpeAaGInz_jZ6iczcYNDlN?usp=sharing) and move them to `checkpoints`.
 - See `example_cmd.sh` for example commands for running the code.
+- See `USENIX-AE/AE-README.md` for instructions to reproduce all results in the main body of paper.
 
 If anything is unclear, please open an issue or contact Chong Xiang (cxiang@princeton.edu).
 

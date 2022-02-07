@@ -1,7 +1,7 @@
 import numpy as np 
 import torch 
 
-def gen_mask_set(args,ds_config):
+def gen_mask_set(args,ds_config,mr=False):
     # generate a R-covering mask set
     '''
     INPUT:
@@ -29,7 +29,10 @@ def gen_mask_set(args,ds_config):
         MASK_STRIDE = (int(np.ceil((IMG_SIZE[0] - PATCH_SIZE[0] + 1)/args.num_mask)),int(np.ceil((IMG_SIZE[1] - PATCH_SIZE[1] + 1)/args.num_mask)))
 
     # calculate mask size
-    MASK_SIZE = (min(PATCH_SIZE[0]+MASK_STRIDE[0]-1,IMG_SIZE[0]),min(PATCH_SIZE[1]+MASK_STRIDE[1]-1,IMG_SIZE[1]))
+    if mr:
+        MASK_SIZE = (min(PATCH_SIZE[0]+MASK_STRIDE[0]*3-1,IMG_SIZE[0]),min(PATCH_SIZE[1]+MASK_STRIDE[1]*3-1,IMG_SIZE[1]))
+    else:
+        MASK_SIZE = (min(PATCH_SIZE[0]+MASK_STRIDE[0]-1,IMG_SIZE[0]),min(PATCH_SIZE[1]+MASK_STRIDE[1]-1,IMG_SIZE[1]))
 
     mask_list = []
     idx_list1 = list(range(0,IMG_SIZE[0] - MASK_SIZE[0] + 1,MASK_STRIDE[0]))
