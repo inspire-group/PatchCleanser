@@ -27,27 +27,26 @@ Below is an overview of relevant files for the artifact evaluation. Please organ
 |   |   └── val                      #imagenet validation set
 |   ├── imagenette                   #data directory for imagenette
 |   |   └── val                      #imagenette validation set
-|   ├── cifar                        #data directory for cifar-10
-|   └── svhn                         #data directory for svhn
+|   └── cifar                        #data directory for cifar-10
 |
 └── checkpoints                      #directory for checkpoints
     ├── README.md                    #details of checkpoints
     └── ...                          #model checkpoints
 ```
 #### Dependency
-Install packages `pip install -r requirement.txt`.
+Install [PyTorch](https://pytorch.org/get-started/locally/) with GPU support.
+
+Install other packages `pip install -r requirement.txt`.
 
 #### Datasets
-- [ImageNet](http://www.image-net.org/) (ILSVRC2012) - requires manual download
+- [ImageNet](https://image-net.org/download.php) (ILSVRC2012) - requires manual download; also available on [Kaggle](https://www.kaggle.com/c/imagenet-object-localization-challenge/data)
 - [ImageNette](https://s3.amazonaws.com/fast-ai-imageclas/imagenette2.tgz) - requires manual download
-- [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html) - can be downloaded automatically within our code
-Move manually downloaded data to the directory `data/` specified above.
+- [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html) - will be downloaded automatically within our code
+Move manually downloaded data to the directory `data/`.
 
 #### Checkpoints
 Download checkpoints from Google Drive [link](https://drive.google.com/drive/folders/1Ewks-NgJHDlpeAaGInz_jZ6iczcYNDlN?usp=sharing).
-Move downloaded weights to the directory `checkpoints/` specified above.
-
-
+Move downloaded weights to the directory `checkpoints/`.
 
 ## Experiments
 
@@ -61,7 +60,7 @@ We also note the estimated runtime (with one GPU) for each experiment.
 
 #### Table 2 (and Figure 2): our main evaluation results
 
-The following scripts allow us to obtain results for our main evaluation in Table 2 (Figure 2 plot a subset of Table 2).
+The following scripts allow us to obtain results for our main evaluation in Table 2 and Figure 2.
 
 ```shell
 #### imagenette 
@@ -119,11 +118,11 @@ python vanilla_clean_acc.py --model resmlp_24_distilled_224_cutout2_128  --datas
 python vanilla_clean_acc.py --model vit_base_patch16_224_cutout2_128  --dataset imagenette --num_img -1  
 
 #imagenet
-python vanilla_clean_acc.py --model resnetv2_50x1_bit_distilled_cutout2_128  --dataset imagenet --num_img -1  
+python vanilla_clean_acc.py --model resnetv2_50x1_bit_distilled_cutout2_128  --dataset imagenet --num_img -1 
 python vanilla_clean_acc.py --model resmlp_24_distilled_224_cutout2_128  --dataset imagenet --num_img -1  
 python vanilla_clean_acc.py --model vit_base_patch16_224_cutout2_128  --dataset imagenet --num_img -1  
 
-Cifar
+#cifar
 python vanilla_clean_acc.py --model resnetv2_50x1_bit_distilled_cutout2_128  --dataset cifar --num_img -1  
 python vanilla_clean_acc.py --model resmlp_24_distilled_224_cutout2_128  --dataset cifar --num_img -1  
 python vanilla_clean_acc.py --model vit_base_patch16_224_cutout2_128  --dataset cifar --num_img -1  
@@ -198,7 +197,7 @@ python misc/pc_multiple.py --mode shape --dataset imagenet --model vit_base_patc
 python misc/pc_multiple.py --mode shape --dataset imagenette --model vit_base_patch16_224_cutout2_128 --num_img 500 --mask_stride 32 --patch_size 23 
 python misc/pc_multiple.py --mode shape --dataset cifar --model vit_base_patch16_224_cutout2_128 --num_img 500 --mask_stride 32 --patch_size 23 
 
-# each takes 100hrs (set --num_mask to a smaller numbers can significantly reduce runtime)
+# each takes 100hrs (setting --num_mask to a smaller number can significantly reduce runtime)
 python misc/pc_multiple.py --mode twopatch --dataset imagenet --model vit_base_patch16_224_cutout2_128 --num_img 500 --num_mask 5 --patch_size 23 
 python misc/pc_multiple.py --mode twopatch --dataset imagenette --model vit_base_patch16_224_cutout2_128 --num_img 500 --num_mask 5 --patch_size 23 
 python misc/pc_multiple.py --mode twopatch --dataset cifar --model vit_base_patch16_224_cutout2_128 --num_img 500 --num_mask 5 --patch_size 23 

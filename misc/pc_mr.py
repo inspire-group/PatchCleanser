@@ -141,7 +141,7 @@ def provable_detection(prediction_map,confidence_map,label,orig_pred,tau):
 
 clean_list = []
 robust_list = []
-for tau in np.arange(0.1,1.,0.02):
+for tau in np.arange(0.1,1.,0.05):
     print(tau)
     clean_corr = 0
     robust_cnt = 0 
@@ -152,8 +152,8 @@ for tau in np.arange(0.1,1.,0.02):
         robust_cnt+=provable
         clean_corr+=clean
         vanilla_corr +=orig_pred==label
-    clean_list.append(robust_cnt/NUM_IMG)
-    robust_list.append(clean_corr/NUM_IMG)
+    robust_list.append(robust_cnt/NUM_IMG)
+    clean_list.append(clean_corr/NUM_IMG)
     print("Provable robust accuracy ({}):".format(tau),robust_cnt/NUM_IMG)
     print("Clean accuracy with defense:",clean_corr/NUM_IMG)
     print("Clean accuracy without defense:",vanilla_corr/NUM_IMG)

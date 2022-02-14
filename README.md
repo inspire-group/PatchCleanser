@@ -3,7 +3,7 @@ By [Chong Xiang](http://xiangchong.xyz/), [Saeed Mahloujifar](https://smahloujif
 
 Code for "[PatchCleanser:  Certifiably Robust Defense against Adversarial Patches for Any Image Classifier](https://arxiv.org/abs/2108.09135)" in USENIX Security Symposium 2022. 
 
-Update 02/06: make some minor changes to the model loading and update the [pretrained weights](https://drive.google.com/drive/folders/1Ewks-NgJHDlpeAaGInz_jZ6iczcYNDlN?usp=sharing) 
+Update 02/2022: make some minor changes for the model loading script and update the [pretrained weights](https://drive.google.com/drive/folders/1Ewks-NgJHDlpeAaGInz_jZ6iczcYNDlN?usp=sharing) 
 
 Update 01/2022: Our paper is accepted by USENIX Security Symposium 2022. We will release the camera-ready version soon!
 
@@ -40,6 +40,7 @@ The code is tested with PyTorch 1.7.0 and timm 0.4.12. The complete list of requ
 |   └── cutout.py                    #utils for masked model training
 |
 ├── misc
+|   ├── reproducibility.md           #detailed instructions for reproducing paper results
 |   ├── pc_mr.py                     #script for minority report (Figure 9)
 |   └── pc_multiple.py               #script for multiple patch shapes and multiple patches (Table 4)
 | 
@@ -56,7 +57,7 @@ The code is tested with PyTorch 1.7.0 and timm 0.4.12. The complete list of requ
     └── ...                          #model checkpoints
 ```
 ## Datasets
-- [ImageNet](http://www.image-net.org/) (ILSVRC2012)
+- [ImageNet](https://image-net.org/download.php) (ILSVRC2012)
 - [ImageNette](https://github.com/fastai/imagenette) ([Full size](https://s3.amazonaws.com/fast-ai-imageclas/imagenette2.tgz))
 - [CIFAR-10/CIFAR-100](https://www.cs.toronto.edu/~kriz/cifar.html)
 - [Oxford Flower-102](https://www.robots.ox.ac.uk/~vgg/data/flowers/102/)
@@ -67,7 +68,7 @@ The code is tested with PyTorch 1.7.0 and timm 0.4.12. The complete list of requ
 - Download data in **Datasets** to `data/`.
 - (optional) Download checkpoints from Google Drive [link](https://drive.google.com/drive/folders/1Ewks-NgJHDlpeAaGInz_jZ6iczcYNDlN?usp=sharing) and move them to `checkpoints`.
 - See `example_cmd.sh` for example commands for running the code.
-- See `USENIX-AE/AE-README.md` for instructions to reproduce all results in the main body of paper.
+- See `misc/reproducibility.md` for instructions to reproduce all results in the main body of paper.
 
 If anything is unclear, please open an issue or contact Chong Xiang (cxiang@princeton.edu).
 
@@ -78,11 +79,11 @@ If anything is unclear, please open an issue or contact Chong Xiang (cxiang@prin
 If you find our work useful in your research, please consider citing:
 
 ```tex
-@article{xiang2021patchcleanser,
+@inproceedings{xiang2022patchcleanser,
   title={PatchCleanser: Certifiably Robust Defense against Adversarial Patches for Any Image Classifier},
   author={Xiang, Chong and Mahloujifar, Saeed and Mittal, Prateek},
-  journal={arXiv preprint arXiv:2108.09135},
-  year={2021}
+  booktitle = {31st {USENIX} Security Symposium ({USENIX} Security)},
+  year={2022}
 }
 ```
 
