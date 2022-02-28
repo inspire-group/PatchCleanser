@@ -111,7 +111,7 @@ for i,(prediction_map,label,orig_pred) in enumerate(zip(prediction_map_list,labe
     orig_corr += orig_pred == label
 
 print("------------------------------")
-print("Provable robust accuracy:",robust/NUM_IMG)
+print("Certified robust accuracy:",robust/NUM_IMG)
 print("Clean accuracy with defense:",clean_corr/NUM_IMG)
 print("Clean accuracy without defense:",orig_corr/NUM_IMG)
 

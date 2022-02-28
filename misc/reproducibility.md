@@ -192,15 +192,20 @@ python pc_clean_acc.py --model vit_base_patch16_224_cutout2_128 --dataset imagen
 The following script evaluates defense performance for all 1% rectangular pixel patches and two 1% square patches (Table 4)
 
 ```shell
-# each takes 11-12 hrs
-python misc/pc_multiple.py --mode shape --dataset imagenet --model vit_base_patch16_224_cutout2_128 --num_img 500 --mask_stride 32 --patch_size 23 
-python misc/pc_multiple.py --mode shape --dataset imagenette --model vit_base_patch16_224_cutout2_128 --num_img 500 --mask_stride 32 --patch_size 23 
-python misc/pc_multiple.py --mode shape --dataset cifar --model vit_base_patch16_224_cutout2_128 --num_img 500 --mask_stride 32 --patch_size 23 
+# move the script to the main directory
+mv misc/pc_multiple.py pc_multiple.py 
 
+# multiple shapes for 1%-pixel patch
+# each takes 11-12 hrs
+python pc_multiple.py --mode shape --dataset imagenet --model vit_base_patch16_224_cutout2_128 --num_img 500 --mask_stride 32 --patch_size 23 
+python pc_multiple.py --mode shape --dataset imagenette --model vit_base_patch16_224_cutout2_128 --num_img 500 --mask_stride 32 --patch_size 23 
+python pc_multiple.py --mode shape --dataset cifar --model vit_base_patch16_224_cutout2_128 --num_img 500 --mask_stride 32 --patch_size 23 
+
+# two 1%-pixel patches
 # each takes 100hrs (setting --num_mask to a smaller number can significantly reduce runtime)
-python misc/pc_multiple.py --mode twopatch --dataset imagenet --model vit_base_patch16_224_cutout2_128 --num_img 500 --num_mask 5 --patch_size 23 
-python misc/pc_multiple.py --mode twopatch --dataset imagenette --model vit_base_patch16_224_cutout2_128 --num_img 500 --num_mask 5 --patch_size 23 
-python misc/pc_multiple.py --mode twopatch --dataset cifar --model vit_base_patch16_224_cutout2_128 --num_img 500 --num_mask 5 --patch_size 23 
+python pc_multiple.py --mode twopatch --dataset imagenet --model vit_base_patch16_224_cutout2_128 --num_img 500 --num_mask 5 --patch_size 23 
+python pc_multiple.py --mode twopatch --dataset imagenette --model vit_base_patch16_224_cutout2_128 --num_img 500 --num_mask 5 --patch_size 23 
+python pc_multiple.py --mode twopatch --dataset cifar --model vit_base_patch16_224_cutout2_128 --num_img 500 --num_mask 5 --patch_size 23 
 ```
 
 
@@ -210,7 +215,9 @@ python misc/pc_multiple.py --mode twopatch --dataset cifar --model vit_base_patc
 The following script evaluates defense performance for Minority Report using our mask set (Figure 9).
 
 ```shell
+# move the script to the main directory
+mv misc/pc_mr.py pc_mr.py 
 # each takes 3-4 hrs
-python misc/pc_mr.py --model vit_base_patch16_224_cutout2_128 --dataset imagenet --num_img -1 --mask_stride 25 --patch_size 32 # the number of masks is 6x6=36
+python pc_mr.py --model vit_base_patch16_224_cutout2_128 --dataset imagenet --num_img -1 --mask_stride 25 --patch_size 32 # the number of masks is 6x6=36
 ```
 

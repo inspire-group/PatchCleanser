@@ -5,7 +5,7 @@ Code for "[PatchCleanser:  Certifiably Robust Defense against Adversarial Patche
 
 Update 02/2022: make some minor changes for the model loading script and update the [pretrained weights](https://drive.google.com/drive/folders/1Ewks-NgJHDlpeAaGInz_jZ6iczcYNDlN?usp=sharing) 
 
-Update 01/2022: Our paper is accepted by USENIX Security Symposium 2022. We will release the camera-ready version soon!
+Update 01/2022: Our paper is accepted to USENIX Security Symposium 2022. We will release the camera-ready version soon!
 
 <img src="./assets/arch.png" align="center" width="100%" alt="defense overview pipeline" >
 
@@ -20,7 +20,7 @@ Update 01/2022: Our paper is accepted by USENIX Security Symposium 2022. We will
 #### Check out this [paper list for adversarial patch research](https://github.com/xiangchong1/adv-patch-paper-list) for more fun!
 
 ## Requirements
-The code is tested with PyTorch 1.7.0 and timm 0.4.12. The complete list of required packages are available in `requirement.txt`, and can be installed with `pip install -r requirement.txt`. The code should be compatible with other versions of packages.
+The code is tested with PyTorch 1.7.0 and timm 0.4.12. The complete list of required packages are available in `requirement.txt`, and can be installed with `pip install -r requirement.txt`. The code should be compatible with newer versions of packages.
 
 ## Files
 ```shell
@@ -67,8 +67,8 @@ The code is tested with PyTorch 1.7.0 and timm 0.4.12. The complete list of requ
 - See **Files** for details of each file. 
 - Download data in **Datasets** to `data/`.
 - (optional) Download checkpoints from Google Drive [link](https://drive.google.com/drive/folders/1Ewks-NgJHDlpeAaGInz_jZ6iczcYNDlN?usp=sharing) and move them to `checkpoints`.
-- See `example_cmd.sh` for example commands for running the code.
-- See `misc/reproducibility.md` for instructions to reproduce all results in the main body of paper.
+- See [`example_cmd.sh`](example_cmd.sh) for example commands for running the code.
+- See [`misc/reproducibility.md`](./misc/reproducibility.md) for instructions to reproduce all results in the main body of paper.
 
 If anything is unclear, please open an issue or contact Chong Xiang (cxiang@princeton.edu).
 
