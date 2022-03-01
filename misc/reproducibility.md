@@ -1,6 +1,6 @@
 ## Overview
 
-This document provides detailed guide to reproduce all experimental results in the main body of our PatchCleanser paper. 
+This document provides a detailed guide to reproduce all experimental results in the main body of our PatchCleanser paper. 
 
 ## Setup
 
@@ -45,24 +45,44 @@ Install other packages `pip install -r requirement.txt`.
 Move manually downloaded data to the directory `data/`.
 
 #### Checkpoints
-Download checkpoints from Google Drive [link](https://drive.google.com/drive/folders/1Ewks-NgJHDlpeAaGInz_jZ6iczcYNDlN?usp=sharing).
-Move downloaded weights to the directory `checkpoints/`.
+1. Download the following checkpoints from the Google Drive [link](https://drive.google.com/drive/folders/1Ewks-NgJHDlpeAaGInz_jZ6iczcYNDlN?usp=sharing).
+
+```
+resnetv2_50x1_bit_distilled_cutout2_128_imagenet.pth
+resnetv2_50x1_bit_distilled_cutout2_128_imagenette.pth
+resnetv2_50x1_bit_distilled_cutout2_128_cifar.pth
+resmlp_24_distilled_224_cutout2_128_imagenet.pth
+resmlp_24_distilled_224_cutout2_128_imagenette.pth
+resmlp_24_distilled_224_cutout2_128_cifar.pth
+vit_base_patch16_224_cutout2_128_imagenet.pth
+vit_base_patch16_224_cutout2_128_imagenette.pth
+vit_base_patch16_224_cutout2_128_cifar.pth
+```
+
+2. Move downloaded weights to the directory `checkpoints/`.
 
 ## Experiments
 
 In this section, we list all the shell commands used for getting experimental results for every table and figure.
 
-Our evaluation metric **clean accuracy** and **certified robust accuracy**, which will be outputted to the console.
+1. Our evaluation metrics are **clean accuracy** and **certified robust accuracy**, which will be outputted to the console. Below is the expected output after running `python pc_certification.py --model vit_base_patch16_224_cutout2_128 --dataset imagenet --num_img -1 --num_mask 6 --patch_size 32`. In this example, the clean accuracy of PatchCleanser defense is 83.9%, and the certified robust accuracy of PatchCleanser defense is 62.1%. These numbers match the results reported in Table 2 (ImageNet, PC-ViT, 2%-pixel patch).
 
-We also note the estimated runtime (with one GPU) for each experiment. 
+```
+Certified robust accuracy: 0.6207
+Clean accuracy with defense: 0.8394
+```
 
-
+2. We also specified the estimated runtime (with one GPU) for each experiment below. 
+   - Running experiments for the entire dataset can take a long time. Please feel free to set ``--num_img`` to a small positive integer (e.g., 1000) to run experiments on a subset of the dataset. This will give an approximated evaluation result.
+   - When ``--num_img`` is set to a negative integer, we will use the entire dataset for experiments; when it is set to a positive integer, we will use a random subset (with ``num_img`` images) for experiments.
 
 #### Table 2 (and Figure 2): our main evaluation results
 
 The following scripts allow us to obtain results for our main evaluation in Table 2 and Figure 2.
 
 ```shell
+# please feel free to set --num_img to a small positive integer (e.g., 1000) to reduce runtime; the script will run experiments on a random subset of the dataset to get an approximated result.
+
 #### imagenette 
 # resnet (each takes 1-2hrs)
 python pc_certification.py --model resnetv2_50x1_bit_distilled_cutout2_128  --dataset imagenette --num_img -1  --num_mask 6 --patch_size 32 # 2% pixel patch
@@ -146,7 +166,23 @@ python pc_certification.py --model vit_base_patch16_224_cutout2_128 --dataset im
 
 
 
-#### Figure 5, 6, 7: defense with different (estimated) patch sizes
+#### Figure 5: defense runtime
+
+The following script evaluates per-example runtime (Figure 8)
+
+```shell
+# each takes a few minutes
+python pc_clean_acc.py --model vit_base_patch16_224_cutout2_128 --dataset imagenet --num_img 5000 --num_mask 2 --patch_size 32 
+python pc_clean_acc.py --model vit_base_patch16_224_cutout2_128 --dataset imagenet --num_img 5000 --num_mask 3 --patch_size 32 
+python pc_clean_acc.py --model vit_base_patch16_224_cutout2_128 --dataset imagenet --num_img 5000 --num_mask 4 --patch_size 32 
+python pc_clean_acc.py --model vit_base_patch16_224_cutout2_128 --dataset imagenet --num_img 5000 --num_mask 5 --patch_size 32 
+python pc_clean_acc.py --model vit_base_patch16_224_cutout2_128 --dataset imagenet --num_img 5000 --num_mask 6 --patch_size 32 
+
+```
+
+
+
+#### Figure 6, 7, 8: defense with different (estimated) patch sizes
 
 The following script is used for evaluating defense performance with different patch sizes (or estimated patch sizes), results are plotted in Figure 5, 6, 7. 
 
@@ -171,22 +207,6 @@ python pc_certification.py --model vit_base_patch16_224_cutout2_128 --dataset im
 
 
 
-#### Figure 8: defense runtime
-
-The following script evaluates per-example runtime (Figure 8)
-
-```shell
-# each takes a few minutes
-python pc_clean_acc.py --model vit_base_patch16_224_cutout2_128 --dataset imagenet --num_img 5000 --num_mask 2 --patch_size 32 
-python pc_clean_acc.py --model vit_base_patch16_224_cutout2_128 --dataset imagenet --num_img 5000 --num_mask 3 --patch_size 32 
-python pc_clean_acc.py --model vit_base_patch16_224_cutout2_128 --dataset imagenet --num_img 5000 --num_mask 4 --patch_size 32 
-python pc_clean_acc.py --model vit_base_patch16_224_cutout2_128 --dataset imagenet --num_img 5000 --num_mask 5 --patch_size 32 
-python pc_clean_acc.py --model vit_base_patch16_224_cutout2_128 --dataset imagenet --num_img 5000 --num_mask 6 --patch_size 32 
-
-```
-
-
-
 #### Table 4: multiple shapes and multiple patches
 
 The following script evaluates defense performance for all 1% rectangular pixel patches and two 1% square patches (Table 4)
@@ -202,7 +222,7 @@ python pc_multiple.py --mode shape --dataset imagenette --model vit_base_patch16
 python pc_multiple.py --mode shape --dataset cifar --model vit_base_patch16_224_cutout2_128 --num_img 500 --mask_stride 32 --patch_size 23 
 
 # two 1%-pixel patches
-# each takes 100hrs (setting --num_mask to a smaller number can significantly reduce runtime)
+# each takes 100hrs; setting --num_mask to a smaller number (e.g., 4) can significantly reduce runtime (at the cost of performance drops)
 python pc_multiple.py --mode twopatch --dataset imagenet --model vit_base_patch16_224_cutout2_128 --num_img 500 --num_mask 5 --patch_size 23 
 python pc_multiple.py --mode twopatch --dataset imagenette --model vit_base_patch16_224_cutout2_128 --num_img 500 --num_mask 5 --patch_size 23 
 python pc_multiple.py --mode twopatch --dataset cifar --model vit_base_patch16_224_cutout2_128 --num_img 500 --num_mask 5 --patch_size 23 
