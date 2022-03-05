@@ -10,7 +10,6 @@ from tqdm import tqdm
 import joblib
 
 from utils.setup import get_model,get_data_loader
-from utils.defense import gen_mask_set,double_masking_precomputed,certify_precomputed
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--model_dir",default='checkpoints',type=str,help="directory of checkpoints")
@@ -23,8 +22,9 @@ parser.add_argument("--num_mask",default=-1,type=int,help="number of mask in one
 parser.add_argument("--patch_size",default=32,type=int,help="size of the adversarial patch (square patch)")
 parser.add_argument("--pa",default=-1,type=int,help="size of the adversarial patch (first axis; for rectangle patch)")
 parser.add_argument("--pb",default=-1,type=int,help="size of the adversarial patch (second axis; for rectangle patch)")
-parser.add_argument("--dump_dir",default='dump',type=str,help='directory to dump two-mask predictions')
+parser.add_argument("--dump_dir",default='dump/dump_mr',type=str,help='directory to dump two-mask predictions')
 parser.add_argument("--override",action='store_true',help='override dumped file')
+parser.add_argument("--mr",default=2,type=int,help="we will use (mr+1)x(mr+1) prediction to generate one vote (default value is 2 since the originial MR uses 3x3 grids)")
 
 args = parser.parse_args()
 DATASET = args.dataset
@@ -47,31 +47,83 @@ model.eval()
 cudnn.benchmark = True
 num_classes = 1000 if args.dataset == 'imagenet' else 10
 
+def gen_mask_set_mr(args,ds_config,mr=2):
+
+    # generate mask set
+    #assert args.mask_stride * args.num_mask < 0 #can only set either mask_stride or num_mask
+    assert args.mask_stride > 0
+    IMG_SIZE = (ds_config['input_size'][1],ds_config['input_size'][2])
+
+    if args.pa>0 and args.pb>0: #rectangle patch
+        PATCH_SIZE = (args.pa,args.pb)
+    else: #square patch
+        PATCH_SIZE = (args.patch_size,args.patch_size)
+
+    if args.mask_stride>0: #use specified mask stride
+        MASK_STRIDE = (args.mask_stride,args.mask_stride)
+
+    # calculate mask size
+
+    MASK_SIZE = (min(PATCH_SIZE[0]+MASK_STRIDE[0]*(mr+1)-1,IMG_SIZE[0]),min(PATCH_SIZE[1]+MASK_STRIDE[1]*(mr+1)-1,IMG_SIZE[1]))
+
+    mask_list = []
+    idx_list1 = list(range(0,IMG_SIZE[0] - MASK_SIZE[0] + 1,MASK_STRIDE[0]))
+    if (IMG_SIZE[0] - MASK_SIZE[0])%MASK_STRIDE[0]!=0:
+        idx_list1.append(IMG_SIZE[0] - MASK_SIZE[0])
+
+    idx_list1 = [-j*MASK_STRIDE[0] for j in range(-mr,0)]+idx_list1+[IMG_SIZE[0] - MASK_SIZE[0]+j*MASK_STRIDE[0] for j in range(1,mr+1)]
+
+    idx_list2 = list(range(0,IMG_SIZE[1] - MASK_SIZE[1] + 1,MASK_STRIDE[1]))
+    if (IMG_SIZE[1] - MASK_SIZE[1])%MASK_STRIDE[1]!=0:
+        idx_list2.append(IMG_SIZE[1] - MASK_SIZE[1])
+    idx_list2 = [-j*MASK_STRIDE[1] for j in range(-mr,0)]+idx_list2+[IMG_SIZE[1] - MASK_SIZE[1]+j*MASK_STRIDE[1] for j in range(1,mr+1)]
+
+    for x in idx_list1:
+        for y in idx_list2:
+            mask = torch.ones([1,1,IMG_SIZE[0],IMG_SIZE[1]],dtype=bool).cuda()
+            mask[...,max(x,0):min(x+MASK_SIZE[0],IMG_SIZE[0]),max(y,0):min(y+MASK_SIZE[1],IMG_SIZE[1])] = False
+            mask_list.append(mask)
+    return mask_list,MASK_SIZE,MASK_STRIDE
+
+
+
+
 # generate the mask set
-mask_list,MASK_SIZE,MASK_STRIDE = gen_mask_set(args,ds_config)
-#print(len(mask_list))
-#args.num_mask = int((len(mask_list))**0.5)
+mask_list,MASK_SIZE,MASK_STRIDE = gen_mask_set_mr(args,ds_config,mr=args.mr)
+print(len(mask_list))
+args.num_mask = int((len(mask_list))**0.5)
+
+
+
+def process_minority_report(prediction_map,confidence_map,mr=2):
+    num_img = prediction_map.shape[0]
+    num_pred =  prediction_map.shape[1]
+    voting_grid_pred = np.zeros([num_img,num_pred-mr,num_pred-mr],dtype=int)
+    voting_grid_conf = np.zeros([num_img,num_pred-mr,num_pred-mr])
+    for a in range(num_img):
+        for i in range(num_pred-mr):
+            for j in range(num_pred-mr):
+                confidence_vec = np.sum(confidence_map[a,i:i+mr+1,j:j+mr+1],axis=(0,1))
+                if mr >0:
+                    confidence_vec -= np.min(confidence_map[a,i:i+mr+1,j:j+mr+1],axis=(0,1)) 
+                    confidence_vec /= (mr+1)**2
+                pred = np.argmax(confidence_vec)
+                conf = confidence_vec[pred]
+                voting_grid_pred[a,i,j]=pred
+                voting_grid_conf[a,i,j]=conf
+    return voting_grid_pred,voting_grid_conf
+
 # the computation of two-mask predictions is expensive; will dump (or resue the dumped) two-mask predictions.
-SUFFIX = '_one_mask_{}_{}_m{}_s{}_{}.z'.format(DATASET,MODEL_NAME,MASK_SIZE,MASK_STRIDE,NUM_IMG)
-SUFFIX2 = '_two_mask_{}_{}_m{}_s{}_{}.z'.format(DATASET,MODEL_NAME,MASK_SIZE,MASK_STRIDE,NUM_IMG)
-print(os.path.join(DUMP_DIR,'confidence_map_list'+SUFFIX2))
+SUFFIX = '_mr_one_mask_{}_{}_m{}_s{}_mr{}_{}.z'.format(DATASET,MODEL_NAME,MASK_SIZE,MASK_STRIDE,args.mr,NUM_IMG)
+#SUFFIX = '_mr_one_mask_{}_{}_m{}_s{}_{}.z'.format(DATASET,MODEL_NAME,MASK_SIZE,MASK_STRIDE,NUM_IMG)
 if not args.override and os.path.exists(os.path.join(DUMP_DIR,'prediction_map_list'+SUFFIX)):
-    print('loading one-mask predictions')
+    print('loading two-mask predictions')
     confidence_map_list = joblib.load(os.path.join(DUMP_DIR,'confidence_map_list'+SUFFIX))
     prediction_map_list = joblib.load(os.path.join(DUMP_DIR,'prediction_map_list'+SUFFIX))
     orig_prediction_list = joblib.load(os.path.join(DUMP_DIR,'orig_prediction_list_{}_{}_{}.z'.format(DATASET,MODEL_NAME,NUM_IMG)))
     label_list = joblib.load(os.path.join(DUMP_DIR,'label_list_{}_{}_{}.z'.format(DATASET,MODEL_NAME,NUM_IMG)))
-elif not args.override and os.path.exists(os.path.join(DUMP_DIR,'confidence_map_list'+SUFFIX2)):
-    print('loading two-mask predictions')
-    confidence_map_list = joblib.load(os.path.join(DUMP_DIR,'confidence_map_list'+SUFFIX2))
-    prediction_map_list = joblib.load(os.path.join(DUMP_DIR,'prediction_map_list'+SUFFIX2))
-    print('converting two-mask predictions to one-mask predictions')
-    confidence_map_list = np.diagonal(confidence_map_list,axis1=1,axis2=2)
-    prediction_map_list = np.diagonal(prediction_map_list,axis1=1,axis2=2)
-    orig_prediction_list = joblib.load(os.path.join(DUMP_DIR,'orig_prediction_list_{}_{}_{}.z'.format(DATASET,MODEL_NAME,NUM_IMG)))
-    label_list = joblib.load(os.path.join(DUMP_DIR,'label_list_{}_{}_{}.z'.format(DATASET,MODEL_NAME,NUM_IMG)))
 else:
-    print('computing one-mask predictions')
+    print('computing two-mask predictions')
     prediction_map_list = []
     confidence_map_list = []
     label_list = []
@@ -81,22 +133,25 @@ else:
         labels = labels.numpy()
         num_img = data.shape[0]
 
+
         #two-mask predictions
-        num_mask = len(mask_list)
-        prediction_map = np.zeros([num_img,num_mask],dtype=int)
-        confidence_map = np.zeros([num_img,num_mask])
+        prediction_map = np.zeros([num_img,args.num_mask,args.num_mask],dtype=int)
+        confidence_map = np.zeros([num_img,args.num_mask,args.num_mask,num_classes])
 
         for i,mask in enumerate(mask_list):
 
             masked_output = model(torch.where(mask,data,torch.tensor(0.).cuda()))
             masked_output = torch.nn.functional.softmax(masked_output,dim=1)
-            masked_conf, masked_pred = masked_output.max(1)
+            _, masked_pred = masked_output.max(1)
             masked_pred = masked_pred.detach().cpu().numpy()
-            masked_conf = masked_conf.detach().cpu().numpy()
+            masked_conf = masked_output.detach().cpu().numpy()
 
-            prediction_map[:,i] = masked_pred
-            confidence_map[:,i] = masked_conf  
-                    
+            a,b = divmod(i,args.num_mask)
+            prediction_map[:,a,b] = masked_pred
+            confidence_map[:,a,b,:] = masked_conf  
+    
+        prediction_map,confidence_map = process_minority_report(prediction_map,confidence_map,mr=args.mr)
+                
         #vanilla predictions
         clean_output = model(data)
         clean_conf, clean_pred = clean_output.max(1)  
@@ -117,6 +172,7 @@ else:
     joblib.dump(label_list,os.path.join(DUMP_DIR,'label_list_{}_{}_{}.z'.format(DATASET,MODEL_NAME,NUM_IMG)))
 
 
+
 def provable_detection(prediction_map,confidence_map,label,orig_pred,tau):
     if orig_pred != label: # clean prediction is incorrect
         return 0,0 # 0 for incorrect clean prediction
@@ -131,7 +187,7 @@ def provable_detection(prediction_map,confidence_map,label,orig_pred,tau):
 
 clean_list = []
 robust_list = []
-for tau in np.arange(0.,1.,0.05):
+for tau in np.arange(0.,1.,0.1):
     print(tau)
     clean_corr = 0
     robust_cnt = 0 

@@ -238,6 +238,6 @@ The following script evaluates defense performance for Minority Report using our
 # move the script to the main directory
 mv misc/pc_mr.py pc_mr.py 
 # each takes 3-4 hrs
-python pc_mr.py --model vit_base_patch16_224_cutout2_128 --dataset imagenet --num_img -1 --mask_stride 25 --patch_size 32 # the number of masks is 6x6=36
+python pc_mr.py --model vit_base_patch16_224_cutout2_128 --dataset imagenet --num_img -1 --num_mask 6 --patch_size 32 # the number of masks is 6x6=36
 ```
 

@@ -1,13 +1,12 @@
 import numpy as np 
 import torch 
 
-def gen_mask_set(args,ds_config,mr=False):
+def gen_mask_set(args,ds_config):
     # generate a R-covering mask set
     '''
     INPUT:
     args            argparse.Namespace, the set of argumements/hyperparamters for mask set generation
     ds_config       dict, data preprocessing dict 
-    mr              bool, whether to use Minority Report (disabled by default). ATTN: this flag is only for the compatibility with MR, and is irrelevant to the PatchCleanser defense
 
     OUTPUT:
     mask_list       list of torch.tensor, the generation R-covering mask set, the binary masks are moved to CUDA
@@ -30,11 +29,7 @@ def gen_mask_set(args,ds_config,mr=False):
         MASK_STRIDE = (int(np.ceil((IMG_SIZE[0] - PATCH_SIZE[0] + 1)/args.num_mask)),int(np.ceil((IMG_SIZE[1] - PATCH_SIZE[1] + 1)/args.num_mask)))
 
     # calculate mask size
-    if mr: 
-        #only for implementing Minority Reports
-        MASK_SIZE = (min(PATCH_SIZE[0]+MASK_STRIDE[0]*3-1,IMG_SIZE[0]),min(PATCH_SIZE[1]+MASK_STRIDE[1]*3-1,IMG_SIZE[1]))
-    else:
-        MASK_SIZE = (min(PATCH_SIZE[0]+MASK_STRIDE[0]-1,IMG_SIZE[0]),min(PATCH_SIZE[1]+MASK_STRIDE[1]-1,IMG_SIZE[1]))
+    MASK_SIZE = (min(PATCH_SIZE[0]+MASK_STRIDE[0]-1,IMG_SIZE[0]),min(PATCH_SIZE[1]+MASK_STRIDE[1]-1,IMG_SIZE[1]))
 
     mask_list = []
     idx_list1 = list(range(0,IMG_SIZE[0] - MASK_SIZE[0] + 1,MASK_STRIDE[0]))
