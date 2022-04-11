@@ -3,9 +3,11 @@ By [Chong Xiang](http://xiangchong.xyz/), [Saeed Mahloujifar](https://smahloujif
 
 Code for "[PatchCleanser:  Certifiably Robust Defense against Adversarial Patches for Any Image Classifier](https://arxiv.org/abs/2108.09135)" in USENIX Security Symposium 2022. 
 
-Update 03/2022: released the [**leaderboard** for certifiable robust image classification against adversarial patches](https://docs.google.com/spreadsheets/d/1zDBg5AmpWq92c_MaSx6vq4FsOUnzu57i8aUuex2NT7Y/edit?usp=sharing); the **camera-ready** version is available [here](https://drive.google.com/file/d/1_EVcUgIZQWJvVgyd6UYJIvvWmTn39wop/view?usp=sharing); we will upload an extended technical report to arXiv soon!
+Update 04/2022: We earned all badges (available, functional, reproduced) in USENIX artifact evaluation! We released the extended technical report [here](https://arxiv.org/abs/2108.09135).
 
-Update 02/2022: make some minor changes for the model loading script and update the [pretrained weights](https://drive.google.com/drive/folders/1Ewks-NgJHDlpeAaGInz_jZ6iczcYNDlN?usp=sharing) 
+Update 03/2022: released the [**leaderboard** for certifiable robust image classification against adversarial patches](https://github.com/inspire-group/patch-defense-leaderboard); the **camera-ready** version is available [here](https://drive.google.com/file/d/1_EVcUgIZQWJvVgyd6UYJIvvWmTn39wop/view?usp=sharing); we will upload an extended technical report to arXiv soon!
+
+Update 02/2022: made some minor changes for the model loading script and updated the [pretrained weights](https://drive.google.com/drive/folders/1Ewks-NgJHDlpeAaGInz_jZ6iczcYNDlN?usp=sharing) 
 
 Update 01/2022: Our paper is accepted to USENIX Security Symposium 2022. We will release the camera-ready version soon!
 
@@ -19,7 +21,7 @@ Update 01/2022: Our paper is accepted to USENIX Security Symposium 2022. We will
 
 <img src="./assets/comparison.png" align="center" width="50%" alt="performance comparison" >
 
-#### Check out our [paper list for adversarial patch research](https://github.com/xiangchong1/adv-patch-paper-list) and [leaderboard for certifiable robust image classification](https://docs.google.com/spreadsheets/d/1zDBg5AmpWq92c_MaSx6vq4FsOUnzu57i8aUuex2NT7Y/edit?usp=sharing) for fun!
+#### Check out our [paper list for adversarial patch research](https://github.com/xiangchong1/adv-patch-paper-list) and [leaderboard for certifiable robust image classification](https://github.com/inspire-group/patch-defense-leaderboard) for fun!
 
 ## Requirements
 The code is tested with PyTorch 1.7.0 and timm 0.4.12. The complete list of required packages are available in `requirement.txt`, and can be installed with `pip install -r requirement.txt`. The code should be compatible with newer versions of packages.
