@@ -71,6 +71,7 @@ The code is tested with PyTorch 1.7.0 and timm 0.4.12. The complete list of requ
 - See **Files** for details of each file. 
 - Download data in **Datasets** to `data/`.
 - (optional) Download checkpoints from Google Drive [link](https://drive.google.com/drive/folders/1Ewks-NgJHDlpeAaGInz_jZ6iczcYNDlN?usp=sharing) and move them to `checkpoints`.
+- (optional) Download pre-computed two-mask predictions for ImageNet from Google Drive [link](https://drive.google.com/drive/folders/1Ewks-NgJHDlpeAaGInz_jZ6iczcYNDlN?usp=sharing) and move them to `dump`. Computing two-mask predictions for other datasets shouldn't take too long.
 - See [`example_cmd.sh`](example_cmd.sh) for example commands for running the code.
 - See [`misc/reproducibility.md`](./misc/reproducibility.md) for instructions to reproduce all results in the main body of paper.
 
