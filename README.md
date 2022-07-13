@@ -1,15 +1,14 @@
 # PatchCleanser:  Certifiably Robust Defense against Adversarial Patches for Any Image Classifier
-By [Chong Xiang](http://xiangchong.xyz/), [Saeed Mahloujifar](https://smahloujifar.github.io/), [Prattek Mittal](https://www.princeton.edu/~pmittal/)
+
+By [Chong Xiang](http://xiangchong.xyz/), [Saeed Mahloujifar](https://smahloujifar.github.io/), [Prateek Mittal](https://www.princeton.edu/~pmittal/)
 
 Code for "[PatchCleanser:  Certifiably Robust Defense against Adversarial Patches for Any Image Classifier](https://arxiv.org/abs/2108.09135)" in USENIX Security Symposium 2022. 
 
-Update 04/2022: We earned all badges (available, functional, reproduced) in USENIX artifact evaluation! We released the extended technical report [here](https://arxiv.org/abs/2108.09135).
+Update 04/2022: We earned all badges (available, functional, reproduced) in USENIX artifact evaluation! The camera ready version is available [here](https://www.usenix.org/conference/usenixsecurity22/presentation/xiang). We released the extended technical report [here](https://arxiv.org/abs/2108.09135).
 
-Update 03/2022: released the [**leaderboard** for certifiable robust image classification against adversarial patches](https://github.com/inspire-group/patch-defense-leaderboard); the **camera-ready** version is available [here](https://drive.google.com/file/d/1_EVcUgIZQWJvVgyd6UYJIvvWmTn39wop/view?usp=sharing); we will upload an extended technical report to arXiv soon!
+Update 03/2022: released the [**leaderboard** for certifiable robust image classification against adversarial patches](https://github.com/inspire-group/patch-defense-leaderboard). 
 
 Update 02/2022: made some minor changes for the model loading script and updated the [pretrained weights](https://drive.google.com/drive/folders/1Ewks-NgJHDlpeAaGInz_jZ6iczcYNDlN?usp=sharing) 
-
-Update 01/2022: Our paper is accepted to USENIX Security Symposium 2022. We will release the camera-ready version soon!
 
 <img src="./assets/arch.png" align="center" width="100%" alt="defense overview pipeline" >
 
@@ -24,9 +23,11 @@ Update 01/2022: Our paper is accepted to USENIX Security Symposium 2022. We will
 #### Check out our [paper list for adversarial patch research](https://github.com/xiangchong1/adv-patch-paper-list) and [leaderboard for certifiable robust image classification](https://github.com/inspire-group/patch-defense-leaderboard) for fun!
 
 ## Requirements
+
 The code is tested with PyTorch 1.7.0 and timm 0.4.12. The complete list of required packages are available in `requirement.txt`, and can be installed with `pip install -r requirement.txt`. The code should be compatible with newer versions of packages.
 
 ## Files
+
 ```shell
 ├── README.md                        #this file 
 ├── requirement.txt                  #required package
@@ -60,7 +61,9 @@ The code is tested with PyTorch 1.7.0 and timm 0.4.12. The complete list of requ
     ├── README.md                    #details of checkpoints
     └── ...                          #model checkpoints
 ```
+
 ## Datasets
+
 - [ImageNet](https://image-net.org/download.php) (ILSVRC2012)
 - [ImageNette](https://github.com/fastai/imagenette) ([Full size](https://s3.amazonaws.com/fast-ai-imageclas/imagenette2.tgz))
 - [CIFAR-10/CIFAR-100](https://www.cs.toronto.edu/~kriz/cifar.html)
@@ -68,6 +71,7 @@ The code is tested with PyTorch 1.7.0 and timm 0.4.12. The complete list of requ
 - [SVHN](http://ufldl.stanford.edu/housenumbers/)
 
 ## Usage
+
 - See **Files** for details of each file. 
 - Download data in **Datasets** to `data/`.
 - (optional) Download checkpoints from Google Drive [link](https://drive.google.com/drive/folders/1Ewks-NgJHDlpeAaGInz_jZ6iczcYNDlN?usp=sharing) and move them to `checkpoints`.
@@ -76,8 +80,6 @@ The code is tested with PyTorch 1.7.0 and timm 0.4.12. The complete list of requ
 - See [`misc/reproducibility.md`](./misc/reproducibility.md) for instructions to reproduce all results in the main body of paper.
 
 If anything is unclear, please open an issue or contact Chong Xiang (cxiang@princeton.edu).
-
-
 
 ## Citations
 
@@ -91,6 +93,3 @@ If you find our work useful in your research, please consider citing:
   year={2022}
 }
 ```
-
-
-
