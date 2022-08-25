@@ -4,6 +4,8 @@ By [Chong Xiang](http://xiangchong.xyz/), [Saeed Mahloujifar](https://smahloujif
 
 Code for "[PatchCleanser:  Certifiably Robust Defense against Adversarial Patches for Any Image Classifier](https://arxiv.org/abs/2108.09135)" in USENIX Security Symposium 2022. 
 
+Update 08/2022: added notes for "there is no attack code in this repo" [here](./misc/notes_on_robustness_evaluation.md) .
+
 Update 04/2022: We earned all badges (available, functional, reproduced) in USENIX artifact evaluation! The camera ready version is available [here](https://www.usenix.org/conference/usenixsecurity22/presentation/xiang). We released the extended technical report [here](https://arxiv.org/abs/2108.09135).
 
 Update 03/2022: released the [**leaderboard** for certifiable robust image classification against adversarial patches](https://github.com/inspire-group/patch-defense-leaderboard). 
