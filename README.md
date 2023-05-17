@@ -4,6 +4,8 @@ By [Chong Xiang](http://xiangchong.xyz/), [Saeed Mahloujifar](https://smahloujif
 
 Code for "[PatchCleanser:  Certifiably Robust Defense against Adversarial Patches for Any Image Classifier](https://arxiv.org/abs/2108.09135)" in USENIX Security Symposium 2022. 
 
+Update 04/2023: (1) Check out this [35-min presentation](https://drive.google.com/file/d/1LGBKTxMcapQculKZ543SY-bAQ8O8a8ei/view?usp=sharing) and this [short survey paper](https://www.ndss-symposium.org/ndss-paper/auto-draft-379/) for a quick introduction to certifiable patch defenses. (2) Added support for MAE.
+
 Update 08/2022: added notes for "there is no attack code in this repo" [here](./misc/notes_on_robustness_evaluation.md) .
 
 Update 04/2022: We earned all badges (available, functional, reproduced) in USENIX artifact evaluation! The camera ready version is available [here](https://www.usenix.org/conference/usenixsecurity22/presentation/xiang). We released the extended technical report [here](https://arxiv.org/abs/2108.09135).
@@ -26,7 +28,7 @@ Update 02/2022: made some minor changes for the model loading script and updated
 
 ## Requirements
 
-The code is tested with PyTorch 1.7.0 and timm 0.4.12. The complete list of required packages are available in `requirement.txt`, and can be installed with `pip install -r requirement.txt`. The code should be compatible with newer versions of packages.
+Experiments were done with PyTorch 1.7.0 and timm 0.4.12. The complete list of required packages are available in `requirement.txt`, and can be installed with `pip install -r requirement.txt`. The code should be compatible with newer versions of packages. Update 04/2023: tested with `torch==1.13.1` and `timm=0.6.13`; the code should work fine.
 
 ## Files
 

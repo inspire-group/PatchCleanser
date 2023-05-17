@@ -31,3 +31,5 @@ Model training should be very easy with the provided training scripts; see `exam
 
 **Note 2:** `'_{dataset_name}.pth'` will be automatically appended to `args.model` in the scripts `pc_certification.py`, `pc_clean_acc.py`, and `vanilla_clean_acc.py`.
 
+
+**Update 04/2023:** Add support for MAE. Download checkpoints its [GitHub repository](https://github.com/facebookresearch/mae) and add a name suffix `_imagenet.pth`.

@@ -30,13 +30,25 @@ def get_model(model_name,dataset_name,model_dir):
         model = timm.create_model('vit_base_patch16_224', pretrained=timm_pretrained)
     elif 'resmlp_24_distilled_224' in model_name:
         model = timm.create_model('resmlp_24_distilled_224', pretrained=timm_pretrained)
+    elif 'mae_finetuned_vit_base' in model_name:
+        model = timm.create_model('vit_base_patch16_224', pretrained=False,global_pool='avg')
+        timm_pretrained = False
+        del model.pretrained_cfg['mean']
+        del model.pretrained_cfg['std']
+        model.pretrained_cfg['crop_pct'] = 224/256
+
 
     # modify classification head and load model weight
     if not timm_pretrained: 
         model.reset_classifier(num_classes=NUM_CLASSES_DICT[dataset_name])
         checkpoint_name = model_name + '_{}.pth'.format(dataset_name) 
         checkpoint = torch.load(os.path.join(model_dir,checkpoint_name))
-        model.load_state_dict(checkpoint['state_dict']) 
+        if 'mae' not in model_name:
+            model.load_state_dict(checkpoint['state_dict']) 
+        else:
+            msg = model.load_state_dict(checkpoint['model'],strict=False) 
+            print(msg)
+            
 
     return model
 
